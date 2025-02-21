@@ -1,0 +1,4 @@
+php.root
+vendor/**
+.ignore
+.php-cs-fixer.cache

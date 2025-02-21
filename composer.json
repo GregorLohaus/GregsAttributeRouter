@@ -1,0 +1,35 @@
+{
+  "name": "gregs/attribute-router",
+  "description": "Attribute based routing for laravel.",
+  "type": "library",
+  "require": {
+    "laravel/framework": ">=11",
+    "composer/composer": ">=2.8"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "12.1.x-dev",
+    "phpstan/phpstan": "2.1.x-dev",
+    "friendsofphp/php-cs-fixer": "dev-master"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Gregs\\AttributeRouter\\": "src/"
+    }
+  },
+  "scripts": {
+    "stan": [
+      "vendor/bin/phpstan analyze -c phpstan.neon"
+    ],
+    "fmt": [
+      "vendor/bin/php-cs-fixer fix src"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Gregor Lohaus",
+      "email": "lohausgregor@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev"
+}
