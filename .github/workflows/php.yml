@@ -42,7 +42,7 @@ jobs:
       run: composer run-script test
 
     - name: clover summary
-      uses: GregorLohaus/CloverCodeCoverageSummary@025f2cc9f78ee8cd80f66f15ce31e40a729062e9
+      uses: GregorLohaus/CloverCodeCoverageSummary@main
       with:
         filename: clover.xml
 
