@@ -50,6 +50,9 @@ class RoutingTreeMiddlewareNode extends AbstractRoutingTreeNode implements Routi
         if (count($attributes) < 1) {
             throw new AttributeNotPresentException(Middleware::class);
         }
+        if (count($attributes) < 2) {
+            return new self($attributes[0]->newInstance()->getMiddleware());
+        }
         $collection = new RoutingTreeNodeCollection();
         foreach ($attributes as $attribute) {
             $collection->append(new self($attribute->newInstance()->getMiddleware()));

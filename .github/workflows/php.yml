@@ -35,5 +35,18 @@ jobs:
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    - name: Run test suite
+    - name: Run phpstan
       run: composer run-script stan
+
+    - name: Run tests
+      run: composer run-script test
+
+    - name: clover summary
+      uses: saschanowak/CloverCodeCoverageSummary@1.1.0
+      with:
+        filename: clover.xml
+
+    - name: 'code coverage to step summary'
+      run: |
+          cat code-coverage-summary.md >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-details.md >> $GITHUB_STEP_SUMMARY

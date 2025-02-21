@@ -17,6 +17,7 @@ use ReflectionMethod;
  */
 class RoutingTreeControllerNode extends AbstractRoutingTreeNode implements RoutingTreeNodeInterface
 {
+    //@codeCoverageIgnoreStart
     public function __construct(
         private string $controllerClass,
         RoutingTreeNodeCollection $children = new RoutingTreeNodeCollection([]),
@@ -24,7 +25,7 @@ class RoutingTreeControllerNode extends AbstractRoutingTreeNode implements Routi
     ) {
         parent::__construct($children, $parent);
     }
-
+    //@codeCoverageIgnoreEnd
     public function __invoke(): void
     {
         Route::controller($this->controllerClass)->group(function () {

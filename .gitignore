@@ -2,3 +2,5 @@ php.root
 vendor/**
 .ignore
 .php-cs-fixer.cache
+clover.xml
+.phpunit.cache/**
