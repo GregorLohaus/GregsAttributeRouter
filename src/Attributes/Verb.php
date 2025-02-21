@@ -2,10 +2,7 @@
 
 namespace Gregs\AttributeRouter\Attributes;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
-class Verb
+abstract class Verb
 {
     public const GET = 'get';
     public const POST = 'post';
@@ -27,7 +24,7 @@ class Verb
      * @param value-of<Verb::VERBS> $verb
      * @return void
      */
-    public function __construct(
+    protected function __construct(
         private string $verb,
         private string $uri
     ) {

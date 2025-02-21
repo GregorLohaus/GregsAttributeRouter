@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Support\Facades\Route;
 use Gregs\AttributeRouter\Attributes\Verb;
 use Gregs\AttributeRouter\Internal\Exceptions\AttributeNotPresentException;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -66,7 +67,7 @@ class RoutingTreeVerbNode extends AbstractRoutingTreeNode implements RoutingTree
         if (!($reflection instanceof ReflectionMethod)) {
             throw new Exception("Cannot create ". self::class ." from" . $reflection::class);
         }
-        $attributes = $reflection->getAttributes(Verb::class);
+        $attributes = $reflection->getAttributes(Verb::class, ReflectionAttribute::IS_INSTANCEOF);
         if (count($attributes) < 1) {
             throw new AttributeNotPresentException(Verb::class);
         }
