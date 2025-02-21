@@ -41,6 +41,9 @@ jobs:
     - name: Run tests
       run: composer run-script test
 
+    - name: fix clover xml
+      run: sed -i -e 's/Gregs\\\AttributeRouter/gregs\/attribute-router/g' clover.xml
+
     - name: clover summary
       uses: saschanowak/CloverCodeCoverageSummary@1.1.0
       with:
