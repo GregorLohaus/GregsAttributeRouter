@@ -124,16 +124,16 @@ class RoutingTreeNodeCollection implements Iterator, Countable
             $middlewareNode = RoutingTreeMiddlewareNode::tryFromReflection($reflection);
             $prefixNode = RoutingTreePrefixNode::tryFromReflection($reflection);
             $controllerNode = RoutingTreeControllerNode::tryFromReflection($reflection);
-            $collection->insertByPathStack($middlewareNode, $pathStack);
             $collection->insertByPathStack($prefixNode, $pathStack);
+            $collection->insertByPathStack($middlewareNode, $pathStack);
             $collection->insertByPathStack($controllerNode, $pathStack);
             foreach ($reflection->getMethods() as $method) {
                 $pathSubStack = $pathStack;
                 $middlewareNode = RoutingTreeMiddlewareNode::tryFromReflection($method);
                 $prefixNode = RoutingTreePrefixNode::tryFromReflection($method);
                 $verbNode = RoutingTreeVerbNode::tryFromReflection($method);
-                $collection->insertByPathStack($middlewareNode, $pathSubStack);
                 $collection->insertByPathStack($prefixNode, $pathSubStack);
+                $collection->insertByPathStack($middlewareNode, $pathSubStack);
                 $collection->insertByPathStack($verbNode, $pathSubStack);
             }
         }
