@@ -34,7 +34,7 @@
       "vendor/bin/phpstan analyze -c phpstan.neon"
     ],
     "test": [
-      "vendor/bin/phpunit --testdox --coverage-text --coverage-clover clover.xml tests"
+      "XDEBUG_MODE=coverage vendor/bin/phpunit --testdox --coverage-text --coverage-clover clover.xml tests"
     ],
     "fmt": [
       "vendor/bin/php-cs-fixer fix src"
