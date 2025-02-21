@@ -2,6 +2,7 @@
   "name": "gregs/attribute-router",
   "description": "Attribute based routing for laravel.",
   "type": "library",
+  "homepage": "https://github.com/GregorLohaus/GregsAttributeRouter",
   "require": {
     "laravel/framework": ">=11",
     "composer/composer": ">=2.8",
