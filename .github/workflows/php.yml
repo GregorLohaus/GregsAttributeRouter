@@ -47,6 +47,7 @@ jobs:
         filename: clover.xml
 
     - name: 'code coverage to step summary'
-      run: |
+      run: 
           cat code-coverage-summary.md >> $GITHUB_STEP_SUMMARY
+      run:
           cat code-coverage-details.md >> $GITHUB_STEP_SUMMARY
