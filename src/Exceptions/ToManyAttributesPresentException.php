@@ -11,7 +11,7 @@ class ToManyAttributesPresentException extends RuntimeException implements Throw
 {
     public function __construct(
         private string $targetClass,
-        private string $reflectedClass        
+        private string $reflectedClass
     ) {
     }
 

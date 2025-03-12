@@ -12,9 +12,9 @@ class AttributeRouter
      * @param string $namespace
      * @return void
      */
-    public static function namespace(string $namespace,string $path = null): void
+    public static function namespace(string $namespace, string $path = null): void
     {
-        $collection = RoutingTreeNodeCollection::fromNamespace($namespace,$path);
+        $collection = RoutingTreeNodeCollection::fromNamespace($namespace, $path);
         foreach ($collection as $node) {
             $node();
         }

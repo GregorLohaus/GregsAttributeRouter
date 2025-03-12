@@ -23,7 +23,8 @@ class RoutingTreeControllerNode extends AbstractRoutingTreeNode
         parent::__construct();
     }
 
-    public function allowedRoot(): bool {
+    public function allowedRoot(): bool
+    {
         return true;
     }
 
@@ -58,7 +59,7 @@ class RoutingTreeControllerNode extends AbstractRoutingTreeNode
             throw new AttributeNotPresentException(Controller::class);
         }
         if (count($attributes) > 1) {
-            throw new ToManyAttributesPresentException(self::class,$reflection->getName());
+            throw new ToManyAttributesPresentException(self::class, $reflection->getName());
         }
         return new self($reflection->getName());
     }

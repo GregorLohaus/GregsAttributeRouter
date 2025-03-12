@@ -98,7 +98,7 @@ final class RoutingTreeNodeCollection implements Iterator, Countable
         }
     }
 
-    public static function fromNamespace(string $namespace,string $path = null): RoutingTreeNodeCollection
+    public static function fromNamespace(string $namespace, string $path = null): RoutingTreeNodeCollection
     {
         if (null == $path) {
             $classMap = ClassMapGenerator::createMap(app_path());

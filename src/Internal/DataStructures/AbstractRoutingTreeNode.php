@@ -5,6 +5,7 @@ declare(strict_types=1);
 /**
  * @internal Internal namespace
  */
+
 namespace Gregs\AttributeRouter\Internal\DataStructures;
 
 use Gregs\AttributeRouter\Internal\Exceptions\AttributeNotPresentException;

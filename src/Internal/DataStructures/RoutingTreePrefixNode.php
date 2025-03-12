@@ -55,7 +55,7 @@ class RoutingTreePrefixNode extends AbstractRoutingTreeNode
             throw new AttributeNotPresentException(Prefix::class);
         }
         if (count($attributes) > 1) {
-            throw new ToManyAttributesPresentException(self::class,$reflection->getName());
+            throw new ToManyAttributesPresentException(self::class, $reflection->getName());
         }
         return new self($attributes[0]->newInstance()->getPrefix());
     }
