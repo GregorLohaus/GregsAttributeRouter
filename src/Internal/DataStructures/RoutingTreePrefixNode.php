@@ -15,14 +15,12 @@ use ReflectionMethod;
  *   @internal
  *   @property RoutingTreeNodeCollection $children
  */
-class RoutingTreePrefixNode extends AbstractRoutingTreeNode implements RoutingTreeNodeInterface
+class RoutingTreePrefixNode extends AbstractRoutingTreeNode
 {
-    public function __construct(
+    protected function __construct(
         private string $prefix,
-        RoutingTreeNodeCollection $children = new RoutingTreeNodeCollection([]),
-        ?RoutingTreeNodeInterface $parent = null,
     ) {
-        parent::__construct($children, $parent);
+        parent::__construct();
     }
 
     public function __invoke(): void
@@ -46,18 +44,18 @@ class RoutingTreePrefixNode extends AbstractRoutingTreeNode implements RoutingTr
 
     /**
      * @param ReflectionClass<object>|ReflectionMethod $reflection
-     * @return RoutingTreeNodeInterface|RoutingTreeNodeCollection
+     * @return AbstractRoutingTreeNode|RoutingTreeNodeCollection
      * @throws AttributeNotPresentException
      * @throws ToManyAttributesPresentException
      */
-    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): RoutingTreeNodeInterface|RoutingTreeNodeCollection
+    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): AbstractRoutingTreeNode|RoutingTreeNodeCollection
     {
         $attributes = $reflection->getAttributes(Prefix::class);
         if (count($attributes) < 1) {
             throw new AttributeNotPresentException(Prefix::class);
         }
         if (count($attributes) > 1) {
-            throw new ToManyAttributesPresentException("Multiple prefix attributes present on" . $reflection->getName());
+            throw new ToManyAttributesPresentException(self::class,$reflection->getName());
         }
         return new self($attributes[0]->newInstance()->getPrefix());
     }

@@ -5,24 +5,23 @@ namespace Gregs\AttributeRouter\Internal\DataStructures;
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Iterator;
 use Countable;
-use Gregs\AttributeRouter\Exceptions\NotImplementedException;
 use ReflectionClass;
 
 /**
- * @implements Iterator<int,RoutingTreeNodeInterface>
+ * @implements Iterator<int,AbstractRoutingTreeNode >
  */
-class RoutingTreeNodeCollection implements Iterator, Countable
+final class RoutingTreeNodeCollection implements Iterator, Countable
 {
-    private int $index = 0;
     /**
-     * @param array<int,RoutingTreeNodeInterface> $nodes
+     * @param array<int,AbstractRoutingTreeNode > $nodes
      */
     public function __construct(
-        private array $nodes = []
+        private array $nodes = [],
+        private int $index = 0
     ) {
     }
 
-    public function current(): RoutingTreeNodeInterface
+    public function current(): AbstractRoutingTreeNode
     {
         return $this->nodes[$this->index];
     }
@@ -53,14 +52,14 @@ class RoutingTreeNodeCollection implements Iterator, Countable
     }
     /**
      * @return void
-     * @param RoutingTreeNodeInterface $node
+     * @param AbstractRoutingTreeNode  $node
      */
-    public function append(RoutingTreeNodeInterface $node): void
+    public function append(AbstractRoutingTreeNode  $node): void
     {
         $this->nodes[] = $node;
     }
 
-    private function insertAtPath(RoutingTreeNodeInterface $node, string $path): bool
+    private function insertAtPath(AbstractRoutingTreeNode  $node, string $path): bool
     {
         foreach ($this->nodes as $n) {
             if ($n->insertAtPath($node, $path)) {
@@ -71,13 +70,13 @@ class RoutingTreeNodeCollection implements Iterator, Countable
     }
 
     /**
-     * @param RoutingTreeNodeInterface|RoutingTreeNodeCollection|null $node
+     * @param AbstractRoutingTreeNode |RoutingTreeNodeCollection|null $node
      * @param array<string> $pathStack
      * @return void
      */
-    private function insertByPathStack(RoutingTreeNodeInterface|RoutingTreeNodeCollection|null $node, array &$pathStack): void
+    private function insertByPathStack(AbstractRoutingTreeNode |RoutingTreeNodeCollection|null $node, array &$pathStack): void
     {
-        if (null !== $node && $node instanceof RoutingTreeNodeInterface) {
+        if (null !== $node && $node instanceof AbstractRoutingTreeNode) {
             if (count($pathStack) < 1) {
                 $this->append($node);
                 array_push($pathStack, $node->getPathIdentifier());
@@ -99,9 +98,13 @@ class RoutingTreeNodeCollection implements Iterator, Countable
         }
     }
 
-    public static function fromNamespace(string $namespace): RoutingTreeNodeCollection
+    public static function fromNamespace(string $namespace,string $path = null): RoutingTreeNodeCollection
     {
-        $classMap = ClassMapGenerator::createMap(app_path());
+        if (null == $path) {
+            $classMap = ClassMapGenerator::createMap(app_path());
+        } else {
+            $classMap = ClassMapGenerator::createMap($path);
+        }
         $namespaceClassNames = array_filter(array_keys($classMap), function ($className) use ($namespace) {
             return (false !== strpos($className, $namespace));
         });
@@ -114,7 +117,6 @@ class RoutingTreeNodeCollection implements Iterator, Countable
     /**
      * @param array<ReflectionClass<object>> $reflectionClasses
      * @return RoutingTreeNodeCollection
-     * @throws NotImplementedException
      */
     public static function fromRefelctionClasses(array $reflectionClasses): RoutingTreeNodeCollection
     {

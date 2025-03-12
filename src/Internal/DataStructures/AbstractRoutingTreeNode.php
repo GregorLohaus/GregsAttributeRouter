@@ -1,62 +1,48 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * @internal Internal namespace
  */
-
 namespace Gregs\AttributeRouter\Internal\DataStructures;
 
-use Gregs\AttributeRouter\Exceptions\NotImplementedException;
 use Gregs\AttributeRouter\Internal\Exceptions\AttributeNotPresentException;
 use ReflectionClass;
 use ReflectionMethod;
 
-abstract class AbstractRoutingTreeNode implements RoutingTreeNodeInterface
+abstract class AbstractRoutingTreeNode
 {
     protected function __construct(
-        protected RoutingTreeNodeCollection $children = new RoutingTreeNodeCollection([]),
-        protected ?RoutingTreeNodeInterface $parent = null,
+        protected RoutingTreeNodeCollection $children = new RoutingTreeNodeCollection(),
+        protected ?AbstractRoutingTreeNode $parent = null,
     ) {
     }
 
-    public function __invoke(): void
-    {
-        throw new NotImplementedException();
-    }
+    abstract public function __invoke(): void;
 
-    public function allowedRoot(): bool
-    {
-        throw new NotImplementedException();
-    }
+    abstract public function allowedRoot(): bool;
 
     /**
      * @param ReflectionClass<object>|ReflectionMethod $reflection
-     * @return RoutingTreeNodeInterface|RoutingTreeNodeCollection
-     * @throws NotImplementedException
+     * @return AbstractRoutingTreeNode|RoutingTreeNodeCollection
      */
-    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): RoutingTreeNodeInterface|RoutingTreeNodeCollection
-    {
-        throw new NotImplementedException();
-    }
+    abstract public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): AbstractRoutingTreeNode|RoutingTreeNodeCollection;
 
-    public function getPathIdentifier(): string
-    {
-        throw new NotImplementedException();
-    }
+    abstract public function getPathIdentifier(): string;
 
-    public function setParent(RoutingTreeNodeInterface $parent): RoutingTreeNodeInterface
+    final protected function setParent(AbstractRoutingTreeNode $parent): AbstractRoutingTreeNode
     {
         $this->parent = $parent;
         return $this;
     }
 
-    public function getParent(): ?RoutingTreeNodeInterface
+    final public function getParent(): ?AbstractRoutingTreeNode
     {
         return $this->parent;
     }
 
-    public function addChild(RoutingTreeNodeInterface $child): RoutingTreeNodeInterface|false
+    final protected function addChild(AbstractRoutingTreeNode $child): AbstractRoutingTreeNode
     {
         $this->children->append($child->setParent($this));
         return $this;
@@ -64,16 +50,15 @@ abstract class AbstractRoutingTreeNode implements RoutingTreeNodeInterface
 
     /**
      * @param ReflectionClass<object>|ReflectionMethod $reflection
-     * @return RoutingTreeNodeInterface|RoutingTreeNodeCollection|null
+     * @return AbstractRoutingTreeNode|RoutingTreeNodeCollection|null
      */
-    public static function tryFromReflection(ReflectionClass|ReflectionMethod $reflection): RoutingTreeNodeInterface|RoutingTreeNodeCollection|null
+    public static function tryFromReflection(ReflectionClass|ReflectionMethod $reflection): AbstractRoutingTreeNode|RoutingTreeNodeCollection|null
     {
         try {
             return static::fromReflection($reflection);
             // because phpstan gives a dead catch false positive
             // due to early static binding (static::fromRef...)
             // TODO fix + pullrequest
-            // @phpstan-ignore-next-line
         } catch (AttributeNotPresentException) {
             return null;
         }
@@ -82,7 +67,7 @@ abstract class AbstractRoutingTreeNode implements RoutingTreeNodeInterface
      * @param array<string> $array
      * @return string
      */
-    public static function pathFromArray(array $array): string
+    final public static function pathFromArray(array $array): string
     {
         return implode('/', $array);
     }
@@ -90,12 +75,12 @@ abstract class AbstractRoutingTreeNode implements RoutingTreeNodeInterface
     /**
      * @return array<int,string> $array
      */
-    public static function arrayFromPath(string $path): array
+    final public static function arrayFromPath(string $path): array
     {
         return explode('/', trim($path, "/"));
     }
 
-    public function getPath(): string
+    final public function getPath(): string
     {
         $pathStack = [];
         $pathStack[] = $this->getPathIdentifier();
@@ -108,7 +93,7 @@ abstract class AbstractRoutingTreeNode implements RoutingTreeNodeInterface
         return self::pathFromArray($pathStack);
     }
 
-    public function hasPath(string $path): bool
+    final public function hasPath(string $path): bool
     {
         if ($this->getPath() === $path) {
             return true;
@@ -124,10 +109,10 @@ abstract class AbstractRoutingTreeNode implements RoutingTreeNodeInterface
      * Expects the path to contain the path identifier,
      * of the node that is being inserted
      */
-    public function insertAtPath(RoutingTreeNodeInterface $node, string $path, ?string $parentPath = null): bool
+    final public function insertAtPath(AbstractRoutingTreeNode $node, string $path, ?string $parentPath = null): bool
     {
+        // if ($this->hasPath($path) && $node == $this->getByPath($path)) {
         if ($this->hasPath($path)) {
-            // throw new DuplicatePathException($path);
             return false;
         }
         if (null == $parentPath) {
@@ -147,7 +132,7 @@ abstract class AbstractRoutingTreeNode implements RoutingTreeNodeInterface
         return false;
     }
 
-    public function getByPath(string $path): ?RoutingTreeNodeInterface
+    final public function getByPath(string $path): ?AbstractRoutingTreeNode
     {
         if ($this->getPath() == $path) {
             return $this;

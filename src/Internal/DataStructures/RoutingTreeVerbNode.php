@@ -15,35 +15,26 @@ use ReflectionMethod;
 /**
  *   @property RoutingTreeNodeCollection $children
  */
-class RoutingTreeVerbNode extends AbstractRoutingTreeNode implements RoutingTreeNodeInterface
+class RoutingTreeVerbNode extends AbstractRoutingTreeNode
 {
     /**
      * @param value-of<Verb::VERBS> $verb
      * @param string $uri
      * @param string $action
-     * @param RoutingTreeNodeCollection $children
-     * @param null|RoutingTreeNodeInterface $parent
      * @return void
      */
-    public function __construct(
+    protected function __construct(
         private string $verb,
         private string $uri,
         private string $action,
-        RoutingTreeNodeCollection $children = new RoutingTreeNodeCollection([]),
-        ?RoutingTreeNodeInterface $parent = null,
     ) {
-        parent::__construct($children, $parent);
+        parent::__construct();
     }
 
     public function __invoke(): void
     {
         $verb = $this->verb;
         Route::$verb("/" . trim($this->uri, " \n\r\t\v\0/"), $this->action);
-    }
-
-    public function addChild(RoutingTreeNodeInterface $child): RoutingTreeNodeInterface|false
-    {
-        return false;
     }
 
     public function getPathIdentifier(): string
@@ -58,11 +49,11 @@ class RoutingTreeVerbNode extends AbstractRoutingTreeNode implements RoutingTree
 
     /**
      * @param ReflectionClass<object>|ReflectionMethod $reflection
-     * @return RoutingTreeNodeInterface|RoutingTreeNodeCollection
+     * @return AbstractRoutingTreeNode|RoutingTreeNodeCollection
      * @throws Exception
      * @throws AttributeNotPresentException
      */
-    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): RoutingTreeNodeInterface|RoutingTreeNodeCollection
+    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): AbstractRoutingTreeNode|RoutingTreeNodeCollection
     {
         if (!($reflection instanceof ReflectionMethod)) {
             throw new Exception("Cannot create ". self::class ." from" . $reflection::class);

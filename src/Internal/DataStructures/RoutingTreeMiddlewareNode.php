@@ -10,14 +10,12 @@ use Illuminate\Support\Facades\Route;
 use ReflectionClass;
 use ReflectionMethod;
 
-class RoutingTreeMiddlewareNode extends AbstractRoutingTreeNode implements RoutingTreeNodeInterface
+class RoutingTreeMiddlewareNode extends AbstractRoutingTreeNode
 {
-    public function __construct(
+    protected function __construct(
         private string $middlewareName,
-        RoutingTreeNodeCollection $children = new RoutingTreeNodeCollection([]),
-        ?RoutingTreeNodeInterface $parent = null,
     ) {
-        parent::__construct($children, $parent);
+        parent::__construct();
     }
 
     public function __invoke(): void
@@ -41,10 +39,10 @@ class RoutingTreeMiddlewareNode extends AbstractRoutingTreeNode implements Routi
 
     /**
      * @param ReflectionClass<object>|ReflectionMethod $reflection
-     * @return RoutingTreeNodeInterface|RoutingTreeNodeCollection
+     * @return AbstractRoutingTreeNode |RoutingTreeNodeCollection
      * @throws AttributeNotPresentException
      */
-    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): RoutingTreeNodeInterface|RoutingTreeNodeCollection
+    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): AbstractRoutingTreeNode |RoutingTreeNodeCollection
     {
         $attributes = $reflection->getAttributes(Middleware::class);
         if (count($attributes) < 1) {

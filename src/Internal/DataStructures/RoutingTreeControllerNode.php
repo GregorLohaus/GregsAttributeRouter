@@ -15,17 +15,18 @@ use ReflectionMethod;
 /**
  *   @property RoutingTreeNodeCollection $children
  */
-class RoutingTreeControllerNode extends AbstractRoutingTreeNode implements RoutingTreeNodeInterface
+class RoutingTreeControllerNode extends AbstractRoutingTreeNode
 {
-    //@codeCoverageIgnoreStart
-    public function __construct(
+    protected function __construct(
         private string $controllerClass,
-        RoutingTreeNodeCollection $children = new RoutingTreeNodeCollection([]),
-        ?RoutingTreeNodeInterface $parent = null,
     ) {
-        parent::__construct($children, $parent);
+        parent::__construct();
     }
-    //@codeCoverageIgnoreEnd
+
+    public function allowedRoot(): bool {
+        return true;
+    }
+
     public function __invoke(): void
     {
         Route::controller($this->controllerClass)->group(function () {
@@ -40,19 +41,14 @@ class RoutingTreeControllerNode extends AbstractRoutingTreeNode implements Routi
         return strtolower(trim(str_replace("\\", ".", $this->controllerClass), "."));
     }
 
-    public function allowedRoot(): bool
-    {
-        return true;
-    }
-
     /**
      * @param ReflectionClass<object>|ReflectionMethod $reflection
-     * @return RoutingTreeNodeInterface|RoutingTreeNodeCollection
+     * @return AbstractRoutingTreeNode |RoutingTreeNodeCollection
      * @throws Exception
      * @throws AttributeNotPresentException
      * @throws ToManyAttributesPresentException
      */
-    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): RoutingTreeNodeInterface|RoutingTreeNodeCollection
+    public static function fromReflection(ReflectionClass|ReflectionMethod $reflection): AbstractRoutingTreeNode |RoutingTreeNodeCollection
     {
         if (!($reflection instanceof ReflectionClass)) {
             throw new Exception("Cannot create ". self::class ." from" . $reflection::class);
@@ -62,8 +58,9 @@ class RoutingTreeControllerNode extends AbstractRoutingTreeNode implements Routi
             throw new AttributeNotPresentException(Controller::class);
         }
         if (count($attributes) > 1) {
-            throw new ToManyAttributesPresentException("Multiple controller attributes present on class");
+            throw new ToManyAttributesPresentException(self::class,$reflection->getName());
         }
         return new self($reflection->getName());
     }
+
 }

@@ -4,3 +4,4 @@ vendor/**
 .php-cs-fixer.cache
 clover.xml
 .phpunit.cache/**
+coverage.html/**

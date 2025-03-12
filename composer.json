@@ -24,17 +24,14 @@
     "psr-4": {
       "Gregs\\AttributeRouter\\": "src/",
       "Gregs\\AttributeRouter\\Tests\\": "tests/"
-    },
-    "classmap": [
-      "tests/BasicClasses.php"
-    ]
+    }
   },
   "scripts": {
     "stan": [
       "vendor/bin/phpstan analyze -c phpstan.neon"
     ],
     "test": [
-      "XDEBUG_MODE=coverage vendor/bin/phpunit --testdox --coverage-text --coverage-clover clover.xml tests"
+      "XDEBUG_MODE=coverage vendor/bin/phpunit --testdox --coverage-html coverage.html --coverage-clover clover.xml tests"
     ],
     "fmt": [
       "vendor/bin/php-cs-fixer fix src"
